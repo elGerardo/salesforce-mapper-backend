@@ -3,11 +3,13 @@ import jsforce from "jsforce";
 
 export default class SalesforceConnectionMiddleware {
   public static handle(req: Request, res: Response, next: NextFunction) {
-    if (
-      typeof req.headers["x-instance-url"] !== "string" ||
-      typeof req.headers["x-access-token"] !== "string"
-    ) {
-      res.send("failed");
+    if (typeof req.headers["x-instance-url"] !== "string") {
+      res.status(400).json({ message: "Missing X-INSTACE-URL" });
+      return;
+    }
+
+    if (typeof req.headers["x-access-token"] !== "string") {
+      res.status(400).json({ message: "Missing X-ACCESS-TOKEN" });
       return;
     }
 
@@ -17,7 +19,6 @@ export default class SalesforceConnectionMiddleware {
     });
 
     res.locals.sfConn = conn;
-
     next();
   }
 }

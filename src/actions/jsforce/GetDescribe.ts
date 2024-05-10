@@ -1,4 +1,4 @@
-import { Connection, Error } from "jsforce";
+import { Connection } from "jsforce";
 
 export default class GetDescribe {
   public static async handle(
@@ -9,7 +9,7 @@ export default class GetDescribe {
         result: { fields: Array<{ name: string; label: string }> };
         success: true;
       }
-    | { result: Error; success: false }
+    | { result: string; success: false }
   > {
     let success = true;
     const result = await conn
