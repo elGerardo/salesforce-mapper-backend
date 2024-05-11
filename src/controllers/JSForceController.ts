@@ -42,38 +42,29 @@ export default class JSForceController {
   }
 
   public static async get(req: Request, res: Response) {
-    const { query, fields } = req.body;
+    let { limit, offset, fields }: any = req.query;
 
-    if (query === undefined) {
-      let queryString = "SELECT Id, ";
+    fields = JSON.parse(fields);
+    let queryString = "SELECT Id, ";
 
-      for (const index of fields.fields.keys()) {
-        const item = fields.fields[index];
+    for (const index of fields.keys()) {
+      const item = fields[index];
 
-        if (index + 1 !== fields.fields.length)
-          queryString = queryString + item + ", ";
-        else queryString = queryString + item;
-      }
-
-      queryString = `${queryString} FROM ${req.params.sobject} LIMIT ${fields.limit} OFFSET ${fields.offset}`;
-
-      const { result, status } = await GetByQuery.handle(
-        res.locals.sfConn,
-        queryString
-      );
-      res.status(status).json({ query: queryString, ...result });
-      return;
+      if (index + 1 !== fields.length) queryString = queryString + item + ", ";
+      else queryString = queryString + item;
     }
+
+    queryString = `${queryString} FROM ${req.params.sobject} LIMIT ${limit} OFFSET ${offset}`;
 
     const { result, status } = await GetByQuery.handle(
       res.locals.sfConn,
-      query
+      queryString
     );
-    res.status(status).json({ query, result });
+    res.status(status).json({ query: queryString, ...result });
   }
 
   public static async find(req: Request, res: Response) {
-    const { fields, where, limit, offset } = req.body;
+    const { fields, where, limit, offset }: any = req.query;
 
     let queryString = "SELECT Id, ";
 
