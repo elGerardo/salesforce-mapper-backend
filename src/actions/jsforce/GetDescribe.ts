@@ -1,4 +1,5 @@
 import { Connection } from "jsforce";
+import Handler from "../../exceptions/Handler";
 
 export default class GetDescribe {
   public static async handle(
@@ -20,8 +21,7 @@ export default class GetDescribe {
         }
       })
       .catch((err) => {
-        success = false;
-        return err.toString();
+        throw new Handler("E_SOBJECT_NOT_FOUND", err, 404)
       });
 
       return { result, success };

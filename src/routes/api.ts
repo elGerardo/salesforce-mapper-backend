@@ -2,6 +2,7 @@ import express from "express";
 import { Request, Response } from "express";
 import SalesforceConnectionMiddleware from "../middlewares/SalesforceConnectionMiddleware";
 import JSForceController from "../controllers/JSForceController";
+import { TryCatch } from "../utils/TryCatch";
 
 const router = express.Router();
 
@@ -9,29 +10,29 @@ router.get("/live", (_req: Request, res: Response) => {
   res.send({ service: "salesforce mapper", version: 1 });
 });
 
-router.post("/salesforce/login", JSForceController.login);
+router.post("/salesforce/login", TryCatch(JSForceController.login));
 
 router.get(
   "/salesforce/describe/:sobject",
   SalesforceConnectionMiddleware.handle,
-  JSForceController.getDescribe
+  TryCatch(JSForceController.getDescribe)
 );
 
 router.get(
   "/salesforce/get/:sobject",
   SalesforceConnectionMiddleware.handle,
-  JSForceController.get
+  TryCatch(JSForceController.get)
 );
+
 router.get(
   "/salesforce/find/:sobject",
   SalesforceConnectionMiddleware.handle,
-  JSForceController.find
+  TryCatch(JSForceController.find)
 );
-router.post(
-  "/salesforce/create/:sobject",
-  SalesforceConnectionMiddleware.handle,
-  JSForceController.find
-);
+
+router.post("/salesforce/create/:sobject", (_req, res) => {
+  res.send("create");
+});
 router.put("/salesforce/update/:sobject", (_req, res) => {
   res.send("update");
 });
