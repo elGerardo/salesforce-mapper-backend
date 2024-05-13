@@ -12,8 +12,8 @@ app.use(express.json());
 app.use("/api", router);
 app.use(ErrorHandler);
 
-const PORT = process.env.APP_PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  console.log("Server Running");
+  console.log("Server Running: " + PORT);
 });
