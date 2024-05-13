@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "npm install --omit=dev && npm run tsc && npm run start",
+        "startCommand": "npm install --omit=dev && npm run build && npm run start",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 10
     }
