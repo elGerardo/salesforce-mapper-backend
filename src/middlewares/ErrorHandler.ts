@@ -12,6 +12,5 @@ export const ErrorHandler = (
       message: error.errorCode,
     });
   }
-
   return res.status(500).send({ message: "Server Error" });
 };

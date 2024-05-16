@@ -15,5 +15,5 @@ app.use(ErrorHandler);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  console.log("Server Running: " + PORT);
+  console.log("Server Running");
 });

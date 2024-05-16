@@ -44,17 +44,26 @@ export default class JSForceController {
     return res.status(500).json({ message: result });
   }
 
+  public static async query(req: Request, res: Response){
+    let { query }: any = req.query;
+
+    const { result, status } = await GetByQuery.handle(
+      res.locals.sfConn,
+      query
+    );
+    res.status(status).json({ query, ...result });
+  }
+
   public static async get(req: Request, res: Response) {
     let { limit, offset, fields }: any = req.query;
 
     fields = JSON.parse(fields);
-    let queryString = "SELECT Id, ";
+    let queryString = "SELECT Id";
 
     for (const index of fields.keys()) {
       const item = fields[index];
 
-      if (index + 1 !== fields.length) queryString = queryString + item + ", ";
-      else queryString = queryString + item;
+      queryString = queryString + ", " + item;
     }
 
     queryString = `${queryString} FROM ${req.params.sobject} LIMIT ${limit} OFFSET ${offset}`;
@@ -78,19 +87,25 @@ export default class JSForceController {
 
     fields = JSON.parse(fields);
 
-    let queryString = "SELECT Id, ";
+    let queryString = "SELECT Id";
 
-    if(where_value !== "true" && where_value !== "false" && where_conditional === "=") where_value = `${where_value}`;
-
-    if (where_conditional === "LIKE") {
-      where_value = `'%${where_value}%'`;
+    if (
+      (where_value === "true" || where_value === "false") &&
+      (where_conditional === "=" || where_conditional === "!=")
+    )
+      where_value = `${where_value}`;
+    else {
+      if (where_conditional === "LIKE") {
+        where_value = `'%${where_value}%'`;
+      } else {
+        if(isNaN(Number(where_value))) where_value = `'${where_value}'`
+      };
     }
 
     for (const index of fields.keys()) {
       const item = fields[index];
 
-      if (index + 1 !== fields.length) queryString = queryString + item + ", ";
-      else queryString = queryString + item;
+      queryString = queryString + ", " + item;
     }
 
     queryString = `${queryString} FROM ${req.params.sobject} WHERE ${where_field} ${where_conditional} ${where_value} LIMIT ${limit} OFFSET ${offset}`;

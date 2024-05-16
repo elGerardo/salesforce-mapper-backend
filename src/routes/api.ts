@@ -19,6 +19,12 @@ router.get(
 );
 
 router.get(
+  "/salesforce/query/:sobject",
+  SalesforceConnectionMiddleware.handle,
+  TryCatch(JSForceController.query)
+);
+
+router.get(
   "/salesforce/get/:sobject",
   SalesforceConnectionMiddleware.handle,
   TryCatch(JSForceController.get)
